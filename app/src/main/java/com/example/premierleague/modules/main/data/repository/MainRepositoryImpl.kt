@@ -5,6 +5,7 @@ import com.example.premierleague.modules.main.data.mapper.toDto
 import com.example.premierleague.modules.main.data.mapper.toEntity
 import com.example.premierleague.modules.main.data.source.local.FavoriteMatchesLocalDs
 import com.example.premierleague.modules.main.data.source.remote.FavoriteMatchesRemoteDs
+import com.example.premierleague.modules.main.domain.entity.MatchEntity
 import com.example.premierleague.modules.main.domain.entity.MatchesEntity
 import com.example.premierleague.modules.main.domain.repository.MainRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -26,6 +27,21 @@ class MainRepositoryImpl @Inject constructor(
                 val remoteFavoriteMatches: List<MatchesItem?>? = remoteMatches.matches?.filter {
                     it?.id in localIds
                 }
+                remoteFavoriteMatches?.map {
+                    it?.let {
+                        favoriteMatchesLocalDs.insertMatch(it.toEntity(true).toDto())
+                    }
+                }
+                val matchesEntity: List<MatchEntity?>? = remoteMatches.matches?.map {
+                    it?.toEntity(remoteFavoriteMatches?.contains(it) == true)
+                }
+                MatchesEntity((matchesEntity))
+            } else {
+                val matchesEntity: List<MatchEntity?>? = remoteMatches.matches?.map {
+                    it?.toEntity(false)
+                }
+                MatchesEntity((matchesEntity))
+            }
         }
     }
 }
