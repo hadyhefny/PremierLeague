@@ -1,4 +1,4 @@
-package com.example.premierleague.modules.main.data.model
+package com.example.premierleague.core.data.model.api
 
 import com.google.gson.annotations.SerializedName
 

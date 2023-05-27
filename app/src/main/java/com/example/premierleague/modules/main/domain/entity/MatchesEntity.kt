@@ -5,7 +5,7 @@ data class MatchesEntity(
 )
 
 data class MatchEntity(
-    val id: Int?,
+    val id: Long?,
     val date: String?,
     val status: String?,
     val score: Score?,

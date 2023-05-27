@@ -1,6 +1,6 @@
-package com.example.premierleague.modules.main.data.source.remote
+package com.example.premierleague.core.data.source.remote
 
-import com.example.premierleague.modules.main.data.model.MainResponse
+import com.example.premierleague.core.data.model.api.MainResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
 

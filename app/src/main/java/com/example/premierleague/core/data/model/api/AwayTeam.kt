@@ -1,8 +1,8 @@
-package com.example.premierleague.modules.main.data.model
+package com.example.premierleague.core.data.model.api
 
 import com.google.gson.annotations.SerializedName
 
-data class HomeTeam(
+data class AwayTeam(
 
 	@field:SerializedName("name")
 	val name: String? = null,

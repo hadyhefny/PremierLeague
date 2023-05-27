@@ -1,6 +1,7 @@
 package com.example.premierleague.core.di
 
 import com.example.premierleague.BuildConfig
+import com.example.premierleague.core.data.source.remote.MainService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -51,4 +52,11 @@ object NetworkModule {
             .client(okHttpClient)
             .build()
     }
+
+    @Singleton
+    @Provides
+    fun provideWeatherService(retrofit: Retrofit): MainService {
+        return retrofit.create(MainService::class.java)
+    }
+
 }
