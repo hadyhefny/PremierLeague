@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.premierleague.core.data.model.dto.MatchDto
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavoriteMatchesDao {
@@ -13,7 +14,7 @@ interface FavoriteMatchesDao {
     suspend fun insertMatch(matchDto: MatchDto)
 
     @Query("SELECT * FROM favorite_matches WHERE id = id")
-    suspend fun getFavoriteMatches(): List<MatchDto>
+    fun getFavoriteMatches(): Flow<List<MatchDto>>
 
     @Delete
     suspend fun deleteMatch(matchDto: MatchDto)

@@ -2,10 +2,11 @@ package com.example.premierleague.modules.main.data.source.local
 
 import com.example.premierleague.core.data.model.dto.MatchDto
 import com.example.premierleague.core.data.source.local.FavoriteMatchesDao
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class FavoriteMatchesLocalDs @Inject constructor(private val favoriteMatchesDao: FavoriteMatchesDao) {
-    suspend fun getFavoriteMatches(): List<MatchDto> {
+    fun getFavoriteMatches(): Flow<List<MatchDto>> {
         return favoriteMatchesDao.getFavoriteMatches()
     }
 

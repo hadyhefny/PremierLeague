@@ -2,6 +2,7 @@ package com.example.premierleague.core.di
 
 import android.content.Context
 import androidx.room.Room
+import com.example.premierleague.core.data.source.local.FavoriteMatchesDao
 import com.example.premierleague.core.data.source.local.PremierLeagueDatabase
 import dagger.Module
 import dagger.Provides
@@ -29,5 +30,11 @@ object DatabaseModule {
     private fun buildDatabase(context: Context): PremierLeagueDatabase {
         return Room.databaseBuilder(context, PremierLeagueDatabase::class.java, DATABASE_NAME)
             .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideFavoriteMatchesDao(db: PremierLeagueDatabase): FavoriteMatchesDao {
+        return db.favoriteMatchesDao()
     }
 }
