@@ -2,6 +2,7 @@ package com.example.premierleague.modules.main.di
 
 import com.example.premierleague.modules.main.data.repository.MainRepositoryImpl
 import com.example.premierleague.modules.main.data.source.remote.MainService
+import com.example.premierleague.modules.main.domain.repository.MainRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,7 +25,7 @@ object MainModule {
     fun provideMainRepositoryImpl(
         mainService: MainService,
         dispatcher: CoroutineDispatcher
-    ): MainRepositoryImpl {
+    ): MainRepository {
         return MainRepositoryImpl(mainService, dispatcher)
     }
 }
