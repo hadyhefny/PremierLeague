@@ -6,5 +6,7 @@ data class MainUiState(
     val isLoading: Boolean = false,
     val isFavoriteSelected: Boolean = false,
     val matchesEntity: MatchesEntity = MatchesEntity(listOf()),
-    val favoritesMatches: MatchesEntity = MatchesEntity(listOf())
+    val favoritesMatches: MatchesEntity = MatchesEntity(listOf()),
+    val pinnedMatches: MatchesEntity = MatchesEntity(listOf()),
+    val pinnedFavoritesMatches: MatchesEntity = MatchesEntity(listOf())
 )

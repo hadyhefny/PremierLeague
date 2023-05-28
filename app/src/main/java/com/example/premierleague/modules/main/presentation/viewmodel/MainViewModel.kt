@@ -1,7 +1,9 @@
 package com.example.premierleague.modules.main.presentation.viewmodel
 
+import android.text.format.DateUtils
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.premierleague.core.extension.getDate
 import com.example.premierleague.modules.main.domain.entity.MatchEntity
 import com.example.premierleague.modules.main.domain.interactor.ChangeFavoriteStatusUseCase
 import com.example.premierleague.modules.main.domain.interactor.GetMatchesUseCase
@@ -13,6 +15,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,6 +43,10 @@ class MainViewModel @Inject constructor(
 
     }
 
+    fun changeFavoriteSelection(isFav: Boolean) {
+        _uiState.value = _uiState.value.copy(isFavoriteSelected = isFav)
+    }
+
     private fun getMatches() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
@@ -47,8 +54,23 @@ class MainViewModel @Inject constructor(
                 getMatchesUseCase()
                     .collectLatest {
                         _uiState.value = _uiState.value.copy(
-                            isLoading = false, matchesEntity = it,
-                            favoritesMatches = it.copy(matches = it.matches?.filter { it?.isFavorite == true })
+                            isLoading = false,
+                            matchesEntity = it.copy(matches = it.matches?.filter {
+                                !isTodayOrTomorrow(
+                                    it?.date
+                                )
+                            }),
+                            favoritesMatches = it.copy(matches = it.matches?.filter { it?.isFavorite == true }),
+                            pinnedMatches = it.copy(matches = it.matches?.filter {
+                                isTodayOrTomorrow(
+                                    it?.date
+                                ) && it?.isDate == false
+                            }),
+                            pinnedFavoritesMatches = it.copy(matches = it.matches?.filter {
+                                isTodayOrTomorrow(
+                                    it?.date
+                                ) && it?.isDate == false && it.isFavorite
+                            })
                         )
                     }
             } catch (e: Exception) {
@@ -57,7 +79,12 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun changeFavoriteSelection(isFav: Boolean) {
-        _uiState.value = _uiState.value.copy(isFavoriteSelected = isFav)
+    private fun isTodayOrTomorrow(rawDate: String?): Boolean {
+        val date: Date? = rawDate?.getDate()
+        return date?.let {
+            DateUtils.isToday(date.time) || DateUtils.isToday(date.time + DateUtils.DAY_IN_MILLIS)
+        } ?: run {
+            false
+        }
     }
 }

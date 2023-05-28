@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.premierleague.R
+import com.example.premierleague.core.extension.getFormattedDate
 import com.example.premierleague.databinding.ItemDateBinding
 import com.example.premierleague.databinding.ItemMatchBinding
 import com.example.premierleague.modules.main.domain.entity.MatchEntity
@@ -67,16 +68,18 @@ class MatchesAdapter @Inject constructor() :
         fun bind(match: MatchEntity) {
             with(binding) {
                 if (match.status == MatchStatus.SCHEDULED.name || match.status == MatchStatus.POSTPONED.name || match.status == MatchStatus.CANCELLED.name) {
-                    scoreTv.text = match.date?.let { getFormattedDate(it) }
+                    scoreTv.text = match.date//?.getFormattedDate()
                 } else {
                     scoreTv.text = root.context.getString(
                         R.string.score,
-                        match.competitors?.home,
                         match.score?.home.toString(),
-                        match.competitors?.away,
                         match.score?.away.toString()
                     )
                 }
+                competitorsTv.text = root.context.getString(
+                    R.string.competitors, match.competitors?.home,
+                    match.competitors?.away
+                )
                 status.text = match.status
                 favoriteIv.setImageDrawable(
                     ContextCompat.getDrawable(
@@ -94,17 +97,8 @@ class MatchesAdapter @Inject constructor() :
     inner class DateViewHolder(private val binding: ItemDateBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(match: MatchEntity) {
-            binding.dateTv.text = match.date?.let { getFormattedDate(it) }
+            binding.dateTv.text = match.date//?.getFormattedDate()
         }
-    }
-
-    fun getFormattedDate(rawDate: String): String {
-        if (rawDate.isBlank()) return ""
-        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale("en"))
-        sdf.timeZone = TimeZone.getTimeZone("UTC")
-        val date = sdf.parse(rawDate)
-        val formatter = SimpleDateFormat("EEE d MMM")
-        return formatter.format(date)
     }
 
     companion object {

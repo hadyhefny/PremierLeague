@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">PremierLeague</string>
-    <string name="score">%1$s: %2$s vs %3$s: %4$s</string>
+    <string name="competitors">%1$s vs %2$s</string>
+    <string name="score">%1$s x %2$s</string>
     <string name="show_favorites_only">Show favorites only</string>
 </resources>
