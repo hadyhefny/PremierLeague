@@ -7,6 +7,7 @@ import com.example.premierleague.modules.main.data.source.local.FavoriteMatchesL
 import com.example.premierleague.modules.main.data.source.remote.FavoriteMatchesRemoteDs
 import com.example.premierleague.modules.main.domain.entity.MatchEntity
 import com.example.premierleague.modules.main.domain.entity.MatchesEntity
+import com.example.premierleague.modules.main.domain.entity.MatchesParam
 import com.example.premierleague.modules.main.domain.repository.MainRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -22,9 +23,9 @@ class MainRepositoryImpl @Inject constructor(
     private val favoriteMatchesLocalDs: FavoriteMatchesLocalDs,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : MainRepository {
-    override suspend fun getMatches(): Flow<MatchesEntity> {
+    override suspend fun getMatches(matchesParam: MatchesParam): Flow<MatchesEntity> {
         val remoteMatches = withContext(ioDispatcher) {
-            favoriteMatchesRemoteDs.getMatches()
+            favoriteMatchesRemoteDs.getMatches(matchesParam)
         }
         return favoriteMatchesLocalDs.getFavoriteMatches().distinctUntilChanged()
             .map { localMatches ->

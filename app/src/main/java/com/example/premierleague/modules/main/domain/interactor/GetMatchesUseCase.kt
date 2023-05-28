@@ -4,14 +4,15 @@ import android.util.Log
 import com.example.premierleague.core.extension.getFormattedDate
 import com.example.premierleague.modules.main.domain.entity.MatchEntity
 import com.example.premierleague.modules.main.domain.entity.MatchesEntity
+import com.example.premierleague.modules.main.domain.entity.MatchesParam
 import com.example.premierleague.modules.main.domain.repository.MainRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetMatchesUseCase @Inject constructor(private val mainRepository: MainRepository) {
-    suspend operator fun invoke(): Flow<MatchesEntity> {
-        return mainRepository.getMatches().map {
+    suspend operator fun invoke(matchesParam: MatchesParam): Flow<MatchesEntity> {
+        return mainRepository.getMatches(matchesParam).map {
             it.matches?.groupBy {
                 Log.d("AppDebug", "invoke: ${it?.date?.getFormattedDate()}")
                 it?.date?.getFormattedDate()

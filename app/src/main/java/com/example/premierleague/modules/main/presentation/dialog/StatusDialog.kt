@@ -5,8 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.premierleague.R
 import com.example.premierleague.databinding.LayoutStatusDialogBinding
 import com.example.premierleague.modules.main.domain.entity.MatchStatus
 import com.example.premierleague.modules.main.domain.entity.MatchStatus.CANCELLED
@@ -36,6 +39,20 @@ class StatusDialog : DialogFragment() {
     ): View {
         binding = LayoutStatusDialogBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.setLayout(
+            (resources.displayMetrics.widthPixels - resources.displayMetrics.density * 30).toInt(),
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
+        dialog?.window?.setBackgroundDrawable(
+            ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.bg_white
+            )
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

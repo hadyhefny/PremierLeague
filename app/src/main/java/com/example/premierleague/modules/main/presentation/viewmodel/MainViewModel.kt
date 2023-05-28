@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.premierleague.core.extension.getDate
 import com.example.premierleague.modules.main.domain.entity.MatchEntity
+import com.example.premierleague.modules.main.domain.entity.MatchesParam
 import com.example.premierleague.modules.main.domain.interactor.ChangeFavoriteStatusUseCase
 import com.example.premierleague.modules.main.domain.interactor.GetMatchesUseCase
 import com.example.premierleague.modules.main.presentation.model.MainUiState
@@ -47,11 +48,11 @@ class MainViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(isFavoriteSelected = isFav)
     }
 
-    private fun getMatches() {
+    fun getMatches(matchesParam: MatchesParam = MatchesParam()) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             try {
-                getMatchesUseCase()
+                getMatchesUseCase(matchesParam)
                     .collectLatest {
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
