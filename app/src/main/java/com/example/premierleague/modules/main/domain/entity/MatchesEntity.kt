@@ -10,7 +10,8 @@ data class MatchEntity(
     val status: String?,
     val score: Score?,
     val competitors: Competitors?,
-    val isFavorite: Boolean
+    val isFavorite: Boolean,
+    val isDate: Boolean = false
 )
 
 data class Score(
