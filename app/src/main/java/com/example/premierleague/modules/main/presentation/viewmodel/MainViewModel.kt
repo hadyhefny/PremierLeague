@@ -41,7 +41,6 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             changeFavoriteStatusUseCase.invoke(matchEntity)
         }
-
     }
 
     fun changeFavoriteSelection(isFav: Boolean) {
