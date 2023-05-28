@@ -1,6 +1,5 @@
 package com.example.premierleague.modules.main.domain.interactor
 
-import android.util.Log
 import com.example.premierleague.core.extension.getFormattedDate
 import com.example.premierleague.modules.main.domain.entity.MatchEntity
 import com.example.premierleague.modules.main.domain.entity.MatchesEntity
@@ -14,7 +13,6 @@ class GetMatchesUseCase @Inject constructor(private val mainRepository: MainRepo
     suspend operator fun invoke(matchesParam: MatchesParam): Flow<MatchesEntity> {
         return mainRepository.getMatches(matchesParam).map {
             it.matches?.groupBy {
-                Log.d("AppDebug", "invoke: ${it?.date?.getFormattedDate()}")
                 it?.date?.getFormattedDate()
             }
         }.map { group ->

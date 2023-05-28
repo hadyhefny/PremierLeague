@@ -28,8 +28,8 @@ fun String?.getDate(): Date? {
     }
 }
 
-fun Long.formatDate(): String {
-    val sdf = SimpleDateFormat("EEE dd MMM", Locale.getDefault())
+fun Long.formatDate(format: String = "EEE dd MMM"): String {
+    val sdf = SimpleDateFormat(format, Locale.getDefault())
     val date = Date(this)
     return sdf.format(date)
 }

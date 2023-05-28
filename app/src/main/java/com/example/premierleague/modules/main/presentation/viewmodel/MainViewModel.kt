@@ -33,8 +33,10 @@ class MainViewModel @Inject constructor(
     val effect: SharedFlow<String>
         get() = _effect
 
+    val filtersState = MutableStateFlow(MatchesParam())
+
     init {
-        getMatches()
+        collectFiltersState()
     }
 
     fun changeMatchFavoriteStatus(matchEntity: MatchEntity) {
@@ -47,7 +49,7 @@ class MainViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(isFavoriteSelected = isFav)
     }
 
-    fun getMatches(matchesParam: MatchesParam = MatchesParam()) {
+    private fun getMatches(matchesParam: MatchesParam = MatchesParam()) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             try {
@@ -75,6 +77,18 @@ class MainViewModel @Inject constructor(
                     }
             } catch (e: Exception) {
                 _effect.emit(e.message ?: "")
+            }
+        }
+    }
+
+    private fun collectFiltersState() {
+        viewModelScope.launch {
+            filtersState.collectLatest {
+                if (it.dateFrom == null || it.dateTo == null) {
+                    getMatches(it.copy(dateFrom = null, dateTo = null))
+                } else {
+                    getMatches(it)
+                }
             }
         }
     }

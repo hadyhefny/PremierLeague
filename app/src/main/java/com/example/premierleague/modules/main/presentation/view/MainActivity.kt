@@ -70,37 +70,45 @@ class MainActivity : AppCompatActivity() {
         }
         binding.dateFromChip.setOnClickListener {
             openDatePicker {
-                binding.dateFromChip.text = getString(R.string.date_from, it)
+                binding.dateFromChip.text = getString(R.string.date_from, it.formatDate())
                 binding.dateFromChip.isCloseIconVisible = true
+                viewModel.filtersState.value =
+                    viewModel.filtersState.value.copy(dateFrom = it.formatDate("yyyy-MM-dd"))
             }
         }
         binding.dateToChip.setOnClickListener {
             openDatePicker {
-                binding.dateToChip.text = getString(R.string.date_to, it)
+                binding.dateToChip.text = getString(R.string.date_to, it.formatDate())
                 binding.dateToChip.isCloseIconVisible = true
+                viewModel.filtersState.value =
+                    viewModel.filtersState.value.copy(dateTo = it.formatDate("yyyy-MM-dd"))
             }
         }
         binding.dateFromChip.setOnCloseIconClickListener {
             binding.dateFromChip.text = getString(R.string.from)
             binding.dateFromChip.isCloseIconVisible = false
+            viewModel.filtersState.value = viewModel.filtersState.value.copy(dateFrom = null)
         }
         binding.dateToChip.setOnCloseIconClickListener {
             binding.dateToChip.text = getString(R.string.to)
             binding.dateToChip.isCloseIconVisible = false
+            viewModel.filtersState.value = viewModel.filtersState.value.copy(dateTo = null)
         }
         binding.statusChip.setOnClickListener {
             openStatusDialog {
                 binding.statusChip.text = getString(R.string.match_status, it.name)
                 binding.statusChip.isCloseIconVisible = true
+                viewModel.filtersState.value = viewModel.filtersState.value.copy(status = it.name)
             }
         }
         binding.statusChip.setOnCloseIconClickListener {
             binding.statusChip.text = getString(R.string.all)
             binding.statusChip.isCloseIconVisible = false
+            viewModel.filtersState.value = viewModel.filtersState.value.copy(status = null)
         }
     }
 
-    private fun openDatePicker(onDateSelected: (String) -> Unit) {
+    private fun openDatePicker(onDateSelected: (Long) -> Unit) {
         val datePicker =
             MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select date")
@@ -108,7 +116,7 @@ class MainActivity : AppCompatActivity() {
                 .build()
         datePicker.show(supportFragmentManager, "tag")
         datePicker.addOnPositiveButtonClickListener {
-            onDateSelected(it.formatDate())
+            onDateSelected(it)
         }
     }
 
@@ -148,6 +156,7 @@ class MainActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.effect.collectLatest {
                     Log.d(TAG, "renderEffect: $it")
+                    binding.clLoading.isVisible = false
                 }
             }
         }
