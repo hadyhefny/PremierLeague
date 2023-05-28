@@ -3,4 +3,10 @@
     <string name="competitors">%1$s vs %2$s</string>
     <string name="score">%1$s x %2$s</string>
     <string name="show_favorites_only">Show favorites only</string>
+    <string name="date_from">from: %1$s</string>
+    <string name="date_to">to: %1$s</string>
+    <string name="from">from</string>
+    <string name="to">to</string>
+    <string name="all">all</string>
+    <string name="match_status">status: %1$s</string>
 </resources>

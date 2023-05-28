@@ -10,11 +10,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.premierleague.R
+import com.example.premierleague.core.extension.formatDate
 import com.example.premierleague.databinding.ActivityMainBinding
+import com.example.premierleague.modules.main.domain.entity.MatchStatus
 import com.example.premierleague.modules.main.presentation.adapter.MatchesAdapter
 import com.example.premierleague.modules.main.presentation.adapter.PinnedMatchesAdapter
+import com.example.premierleague.modules.main.presentation.dialog.StatusDialog
 import com.example.premierleague.modules.main.presentation.viewmodel.MainViewModel
 import com.google.android.material.checkbox.MaterialCheckBox
+import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -32,6 +37,8 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var pinnedMatchesAdapter: PinnedMatchesAdapter
+
+    private var statusDialog: StatusDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +68,59 @@ class MainActivity : AppCompatActivity() {
         binding.favoritesCb.addOnCheckedStateChangedListener { _, state ->
             viewModel.changeFavoriteSelection(state == MaterialCheckBox.STATE_CHECKED)
         }
+        binding.dateFromChip.setOnClickListener {
+            openDatePicker {
+                binding.dateFromChip.text = getString(R.string.date_from, it)
+                binding.dateFromChip.isCloseIconVisible = true
+            }
+        }
+        binding.dateToChip.setOnClickListener {
+            openDatePicker {
+                binding.dateToChip.text = getString(R.string.date_to, it)
+                binding.dateToChip.isCloseIconVisible = true
+            }
+        }
+        binding.dateFromChip.setOnCloseIconClickListener {
+            binding.dateFromChip.text = getString(R.string.from)
+            binding.dateFromChip.isCloseIconVisible = false
+        }
+        binding.dateToChip.setOnCloseIconClickListener {
+            binding.dateToChip.text = getString(R.string.to)
+            binding.dateToChip.isCloseIconVisible = false
+        }
+        binding.statusChip.setOnClickListener {
+            openStatusDialog {
+                binding.statusChip.text = getString(R.string.match_status, it.name)
+                binding.statusChip.isCloseIconVisible = true
+            }
+        }
+        binding.statusChip.setOnCloseIconClickListener {
+            binding.statusChip.text = getString(R.string.all)
+            binding.statusChip.isCloseIconVisible = false
+        }
+    }
+
+    private fun openDatePicker(onDateSelected: (String) -> Unit) {
+        val datePicker =
+            MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Select date")
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .build()
+        datePicker.show(supportFragmentManager, "tag")
+        datePicker.addOnPositiveButtonClickListener {
+            onDateSelected(it.formatDate())
+        }
+    }
+
+    private fun openStatusDialog(onStatusSelected: (MatchStatus) -> Unit) {
+        statusDialog = StatusDialog()
+        statusDialog?.onDismissListener = {
+            statusDialog = null
+        }
+        statusDialog?.onItemSelected = {
+            onStatusSelected(it)
+        }
+        statusDialog?.show(supportFragmentManager, StatusDialog::class.java.name)
     }
 
     private fun renderState() {
