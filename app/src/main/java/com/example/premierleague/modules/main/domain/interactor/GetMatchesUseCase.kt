@@ -16,7 +16,17 @@ class GetMatchesUseCase @Inject constructor(private val mainRepository: MainRepo
         }.map { group ->
             val groupedList = arrayListOf<MatchEntity?>()
             group?.map {
-                groupedList.add(MatchEntity(null, it.key, null, null, null, false, isDate = true))
+                groupedList.add(
+                    MatchEntity(
+                        null,
+                        it.key,
+                        null,
+                        null,
+                        null,
+                        it.value.any { it?.isFavorite == true },
+                        isDate = true
+                    )
+                )
                 groupedList.addAll(it.value)
             }
             MatchesEntity(matches = groupedList)

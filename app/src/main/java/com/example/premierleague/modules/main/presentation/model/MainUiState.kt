@@ -4,5 +4,7 @@ import com.example.premierleague.modules.main.domain.entity.MatchesEntity
 
 data class MainUiState(
     val isLoading: Boolean = false,
-    val matchesEntity: MatchesEntity = MatchesEntity(listOf())
+    val isFavoriteSelected: Boolean = false,
+    val matchesEntity: MatchesEntity = MatchesEntity(listOf()),
+    val favoritesMatches: MatchesEntity = MatchesEntity(listOf())
 )

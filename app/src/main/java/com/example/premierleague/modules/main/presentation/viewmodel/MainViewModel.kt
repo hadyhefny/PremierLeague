@@ -46,7 +46,10 @@ class MainViewModel @Inject constructor(
             try {
                 getMatchesUseCase()
                     .collectLatest {
-                        _uiState.value = _uiState.value.copy(isLoading = false, matchesEntity = it)
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false, matchesEntity = it,
+                            favoritesMatches = it.copy(matches = it.matches?.filter { it?.isFavorite == true })
+                        )
                     }
             } catch (e: Exception) {
                 _effect.emit(e.message ?: "")
@@ -54,4 +57,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun changeFavoriteSelection(isFav: Boolean) {
+        _uiState.value = _uiState.value.copy(isFavoriteSelected = isFav)
+    }
 }
