@@ -27,8 +27,9 @@ class MainRepositoryImpl @Inject constructor(
         val remoteMatches = withContext(ioDispatcher) {
             favoriteMatchesRemoteDs.getMatches(matchesParam)
         }
-        return favoriteMatchesLocalDs.getFavoriteMatches().distinctUntilChanged()
+        return favoriteMatchesLocalDs.getFavoriteMatches(matchesParam).distinctUntilChanged()
             .map { localMatches ->
+                val matchesEntity: List<MatchEntity?>?
                 val localIds = localMatches.map { it.id }
                 if (localMatches.isNotEmpty()) {
                     val remoteFavoriteMatches: List<MatchesItem?>? =
@@ -40,16 +41,15 @@ class MainRepositoryImpl @Inject constructor(
                             favoriteMatchesLocalDs.insertMatch(it.toEntity(true).toDto())
                         }
                     }
-                    val matchesEntity: List<MatchEntity?>? = remoteMatches.matches?.map {
+                    matchesEntity = remoteMatches.matches?.map {
                         it?.toEntity(remoteFavoriteMatches?.contains(it) == true)
                     }
-                    MatchesEntity((matchesEntity))
                 } else {
-                    val matchesEntity: List<MatchEntity?>? = remoteMatches.matches?.map {
+                    matchesEntity = remoteMatches.matches?.map {
                         it?.toEntity(false)
                     }
-                    MatchesEntity((matchesEntity))
                 }
+                MatchesEntity(matchesEntity)
             }.flowOn(ioDispatcher)
     }
 

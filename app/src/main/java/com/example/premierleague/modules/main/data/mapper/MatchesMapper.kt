@@ -2,6 +2,7 @@ package com.example.premierleague.modules.main.data.mapper
 
 import com.example.premierleague.core.data.model.api.MatchesItem
 import com.example.premierleague.core.data.model.dto.MatchDto
+import com.example.premierleague.core.extension.getFormattedDate
 import com.example.premierleague.modules.main.domain.entity.Competitors
 import com.example.premierleague.modules.main.domain.entity.MatchEntity
 import com.example.premierleague.modules.main.domain.entity.Score
@@ -9,7 +10,7 @@ import com.example.premierleague.modules.main.domain.entity.Score
 fun MatchesItem.toEntity(isFavorite: Boolean) =
     MatchEntity(
         id = id,
-        date = utcDate,
+        date = utcDate?.getFormattedDate(),
         status = status,
         score = Score(
             home = score?.fullTime?.homeTeam,

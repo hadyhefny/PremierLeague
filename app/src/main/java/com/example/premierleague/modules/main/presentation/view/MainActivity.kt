@@ -1,7 +1,6 @@
 package com.example.premierleague.modules.main.presentation.view
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -14,6 +13,7 @@ import com.example.premierleague.R
 import com.example.premierleague.core.extension.formatDate
 import com.example.premierleague.databinding.ActivityMainBinding
 import com.example.premierleague.modules.main.domain.entity.MatchStatus
+import com.example.premierleague.modules.main.domain.entity.MatchesEntity
 import com.example.premierleague.modules.main.presentation.adapter.MatchesAdapter
 import com.example.premierleague.modules.main.presentation.adapter.PinnedMatchesAdapter
 import com.example.premierleague.modules.main.presentation.dialog.StatusDialog
@@ -29,7 +29,6 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel by viewModels<MainViewModel>()
-    private val TAG = "AppDebug"
     private val concatAdapter = ConcatAdapter()
 
     @Inject
@@ -135,17 +134,16 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collectLatest {
-                    binding.clLoading.isVisible = it.isLoading
+                    binding.loadingPb.isVisible = it.isLoading
                     if (it.isFavoriteSelected) {
-                        matchesAdapter.submitList(it.favoritesMatches.matches)
-                        pinnedMatchesAdapter.submitList(mutableListOf(it.pinnedFavoritesMatches))
+                        matchesAdapter.submitList(it.matchesEntity.favoriteMatches)
+                        pinnedMatchesAdapter.submitList(mutableListOf(MatchesEntity(matches = it.matchesEntity.pinnedFavoritesMatches)))
                     } else {
                         matchesAdapter.submitList(it.matchesEntity.matches)
-                        pinnedMatchesAdapter.submitList(mutableListOf(it.pinnedMatches))
+                        pinnedMatchesAdapter.submitList(mutableListOf(MatchesEntity(matches = it.matchesEntity.pinnedMatches)))
                     }
                     concatAdapter.addAdapter(0, pinnedMatchesAdapter)
                     concatAdapter.addAdapter(matchesAdapter)
-                    Log.d(TAG, "renderState: $it")
                 }
             }
         }
@@ -154,9 +152,9 @@ class MainActivity : AppCompatActivity() {
     private fun renderEffect() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.effect.collectLatest {
-                    Log.d(TAG, "renderEffect: $it")
-                    binding.clLoading.isVisible = false
+                viewModel.effect.collectLatest { error ->
+                    binding.errorCl.isVisible = error != null
+                    binding.errorTv.text = error?.let { getString(it) }
                 }
             }
         }

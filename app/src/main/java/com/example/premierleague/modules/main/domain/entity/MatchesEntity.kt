@@ -1,7 +1,10 @@
 package com.example.premierleague.modules.main.domain.entity
 
 data class MatchesEntity(
-    val matches: List<MatchEntity?>?
+    val matches: List<MatchEntity?>?,
+    val favoriteMatches: List<MatchEntity?>? = null,
+    val pinnedMatches: List<MatchEntity?>? = null,
+    val pinnedFavoritesMatches: List<MatchEntity?>? = null
 )
 
 data class MatchEntity(

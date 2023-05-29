@@ -7,7 +7,7 @@ import java.util.TimeZone
 
 fun String.getFormattedDate(): String {
     if (this.isBlank()) return ""
-    val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale("en"))
+    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale("en"))
     sdf.timeZone = TimeZone.getTimeZone("UTC")
     val date = sdf.parse(this)
     val formatter = SimpleDateFormat("EEE d MMM")
@@ -17,15 +17,9 @@ fun String.getFormattedDate(): String {
 fun String?.getDate(): Date? {
     if (this == null)
         return null
-    return try {
-        val sdf = SimpleDateFormat("EEE d MMM", Locale("en"))
-        sdf.timeZone = TimeZone.getTimeZone("UTC")
-        sdf.parse(this)
-    } catch (e: Exception) {
-        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale("en"))
-        sdf.timeZone = TimeZone.getTimeZone("UTC")
-        sdf.parse(this)
-    }
+    val sdf = SimpleDateFormat("EEE d MMM", Locale("en"))
+    sdf.timeZone = TimeZone.getTimeZone("UTC")
+    return sdf.parse(this)
 }
 
 fun Long.formatDate(format: String = "EEE dd MMM"): String {
